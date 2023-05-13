@@ -9,6 +9,7 @@ packages = [{include = "web_sqlalchemy"}]
 [tool.poetry.dependencies]
 python = "^3.8"
 sqlalchemy = "^2.0.13"
+psycopg2 = "^2.9.6"
 
 
 [build-system]
