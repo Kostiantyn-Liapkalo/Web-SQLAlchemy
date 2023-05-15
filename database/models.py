@@ -1,43 +1,55 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
-from sqlalchemy.orm import relationship, declarative_base
-
-Base = declarative_base()
-
-
-class Teacher(Base):
-    __tablename__ = 'teachers'
-    id = Column(Integer, primary_key=True)
-    fullname = Column(String(120), nullable=False)
+from sqlalchemy.orm import relationship
+from db import Base
 
 
-class Group(Base):
-    __tablename__ = 'groups'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(20), nullable=False)
+class Professor(Base):
+
+    __tablename__ = 'professors'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(75), nullable=True)
+    email = Column(String(75), unique=True)
+    subjects = relationship('Subject', back_populates='professor')
+    marks = relationship('Mark', back_populates='professor')
 
 
 class Student(Base):
+
     __tablename__ = 'students'
-    id = Column(Integer, primary_key=True)
-    fullname = Column(String(120), nullable=False)
-    group_id = Column('group_id', ForeignKey('groups.id', ondelete='CASCADE'))
-    group = relationship('Group', backref='students')
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(75), nullable=True)
+    group_id = Column(Integer, ForeignKey('groups.id'))
+    group = relationship('Group', back_populates='students')
+    marks = relationship('Mark', back_populates='student')
 
 
-class Discipline(Base):
-    __tablename__ = 'disciplines'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(120), nullable=False)
-    teacher_id = Column('teacher_id', ForeignKey('teachers.id', ondelete='CASCADE'))
-    teacher = relationship('Teacher', backref='disciplines')
+class Group(Base):
+
+    __tablename__ = 'groups'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(75), nullable=True)
+    students = relationship('Student', back_populates='group')
 
 
-class Grade(Base):
-    __tablename__ = 'grades'
-    id = Column(Integer, primary_key=True)
-    grade = Column(Integer, nullable=False)
-    date_of = Column('date_of', Date, nullable=True)
-    student_id = Column('student_id', ForeignKey('students.id', ondelete='CASCADE'))
-    discipline_id = Column('discipline_id', ForeignKey('disciplines.id', ondelete='CASCADE'))
-    student = relationship('Student', backref='grade')
-    discipline = relationship('Discipline', backref='grade')
+class Subject(Base):
+
+    __tablename__ = 'subjects'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(75), nullable=True)
+    professor_id = Column(Integer, ForeignKey('professors.id'))
+    professor = relationship('Professor', back_populates='subjects')
+    mark = relationship('Mark', back_populates='subject')
+
+
+class Mark(Base):
+
+    __tablename__ = 'marks'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    mark = Column(Integer)
+    date = Column(Date)
+    student_id = Column(Integer, ForeignKey('students.id'))
+    professor_id = Column(Integer, ForeignKey('professors.id'))
+    subject_id = Column(Integer, ForeignKey('subjects.id'))
+    professor = relationship('Professor', back_populates='marks')
+    student = relationship('Student', back_populates='marks')
+    subject = relationship('Subject', back_populates='mark')
