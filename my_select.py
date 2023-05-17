@@ -215,14 +215,14 @@ def select_12():
 
 
 if __name__ == '__main__':
-    print(select_01())
+    # print(select_01())
     # print(select_02())
     # print(select_03())
     # print(select_04())
     # print(select_05())
     # print(select_06())
     # print(select_07())
-    # print(select_08())
+    print(select_08())
     # print(select_09())
     # print(select_10())
     # print(select_11())
